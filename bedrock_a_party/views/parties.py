@@ -9,7 +9,6 @@ _LOADED_PARTIES = {}  # dict of available parties
 _PARTY_NUMBER = 0  # index of the last created party
 
 
-# TODO: complete the decoration
 @parties.route("/parties", methods=['POST', 'GET'])
 def all_parties():
     result = None
@@ -29,13 +28,12 @@ def all_parties():
     return result
 
 
-# TODO: complete the decoration
 @parties.route("/parties/loaded", methods=['GET'])
 def loaded_parties():
     # returns the number of parties currently loaded in the system
     return jsonify({'loaded_parties': len(_LOADED_PARTIES.keys())})
 
-# TODO: complete the decoration
+
 @parties.route("/party/<id>", methods=['DELETE', 'GET'])
 def single_party(id):
     global _LOADED_PARTIES
@@ -54,7 +52,6 @@ def single_party(id):
     return result
 
 
-# TODO: complete the decoration
 @parties.route("/party/<id>/foodlist", methods=['GET'])
 def get_foodlist(id):
     global _LOADED_PARTIES
@@ -69,7 +66,6 @@ def get_foodlist(id):
     return result
 
 
-# TODO: complete the decoration
 @parties.route("/party/<id>/foodlist/<user>/<item>", methods=['POST', 'DELETE'])
 def edit_foodlist(id, user, item):
     global _LOADED_PARTIES
@@ -99,6 +95,7 @@ def edit_foodlist(id, user, item):
             abort(400, e)
 
     return result
+
 
 #
 # These are utility functions. Use them, DON'T CHANGE THEM!!

@@ -338,3 +338,5 @@ $RECYCLE.BIN/
 # IntelliJ, PyCharm, RubyMine, ... All JetBrains software
 .idea/
 
+/ase-assignment1-master.zip
+/bedrock_a_party/Pipfile
