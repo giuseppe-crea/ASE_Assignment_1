@@ -1,7 +1,8 @@
 from flakon import JsonBlueprint
 from flask import abort, jsonify, request
 
-from bedrock_a_party.classes.party import CannotPartyAloneError, Party, NotInvitedGuestError, ItemAlreadyInsertedByUser, NotExistingFoodError
+from bedrock_a_party.classes.party import Party, \
+    CannotPartyAloneError, NotInvitedGuestError, ItemAlreadyInsertedByUser, NotExistingFoodError
 
 parties = JsonBlueprint('parties', __name__)
 
@@ -19,7 +20,10 @@ def all_parties():
             # return the id
             result = party_json
         except CannotPartyAloneError as e:
-            return abort(400, str(e))
+            # this is actually catching the exception thrown by the constructor for the Party object
+            # instantiated within create_party. The "raise" inside create party is not gonna
+            # be called on an empty list of party attendees
+            abort(400, str(e))
 
     elif request.method == 'GET':
         # get all the parties
@@ -43,11 +47,11 @@ def single_party(id):
     exists_party(id)
 
     if 'GET' == request.method:
-        return jsonify(_LOADED_PARTIES[id].serialize())
+        result = jsonify(_LOADED_PARTIES[id].serialize())
 
     elif 'DELETE' == request.method:
         del _LOADED_PARTIES[id]
-        return "Ok", 200
+        result = jsonify({"msg": "Party deleted!"})
 
     return result
 
@@ -61,7 +65,7 @@ def get_foodlist(id):
     exists_party(id)
 
     if 'GET' == request.method:
-        result = jsonify({'foodlist':_LOADED_PARTIES.get(id).get_food_list().serialize()})
+        result = jsonify({'foodlist': _LOADED_PARTIES.get(id).get_food_list().serialize()})
 
     return result
 
@@ -108,8 +112,8 @@ def create_party(req):
     # list of guests
     try:
         guests = json_data['guests']
-    except CannotPartyAloneError as e:
-        abort(400, e)
+    except:
+        raise CannotPartyAloneError("you cannot party alone!")
 
     # add party to the loaded parties lists
     _LOADED_PARTIES[str(_PARTY_NUMBER)] = Party(_PARTY_NUMBER, guests)
